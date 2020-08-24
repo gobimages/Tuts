@@ -1,31 +1,20 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      
-        "name": {
-            "value": "obinath"
+        "adminUsername": {
+            "value": "Gobinath"
         },
-        "location": {
-            "value": "Central US"
+        "adminPasswordOrKey": {
+            "reference": {
+                "keyVault": {
+                    "id": "https://keyvalutforme.vault.azure.net/secrets/Gobinath/59345f7382e044e1b4b3aa2e90b004f7"
+                },
+                "secretName": "Gobinath"
+            }
         },
-        "serverFarmResourceGroup": {
-            "value": "lab1"
-        },
-        "alwaysOn": {
-            "value": false
-        },
-        "numberOfWorkers": {
-            "value": "1"
-        },
-        "currentStack": {
-            "value": "dotnetcore"
-        },
-        "phpVersion": {
-            "value": "OFF"
-        },
-        "errorLink": {
-            "value": "https://obinath.scm.azurewebsites.net/detectors?type=tools&name=eventviewer"
+        "dnsLabelPrefix": {
+            "value": "gobinatnathlol"
         }
     }
 }
