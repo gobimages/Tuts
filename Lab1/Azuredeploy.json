@@ -1,24 +1,80 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "functions": [],
-    "variables": {},
+    "parameters": {
+        "name": {
+            "type": "string"
+        },
+        "alwaysOn": {
+            "type": "bool"
+        },
+        "numberOfWorkers": {
+            "type": "string"
+        },
+        "currentStack": {
+            "type": "string"
+        },
+        "phpVersion": {
+            "type": "string"
+        },
+        "errorLink": {
+            "type": "string"
+        }
+    },
+    "variables":{
+        "WebAppPlanName": "[concat(parameters('name'), '-Plan')]",
+        "WebAppPlan": "[resourceId('Microsoft.Web/serverfarms', variables('WebAppPlanName'))]"
+    },
     "resources": [
         {
-            "name": "gobi112234",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "tags": {
-                "displayName": "gobi4444422"
-            },
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/sites",
             "location": "[resourceGroup().location]",
-            "kind": "StorageV2",
+            "tags": {},
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', variables('WebAppPlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "ANCM_ADDITIONAL_ERROR_PAGE_LINK",
+                            "value": "[parameters('errorLink')]"
+                        }
+                    ],
+                    "metadata": [
+                        {
+                            "name": "CURRENT_STACK",
+                            "value": "[parameters('currentStack')]"
+                        }
+                    ],
+                    "phpVersion": "[parameters('phpVersion')]",
+                    "alwaysOn": "[parameters('alwaysOn')]"
+                },
+                "serverFarmId": "[variables('WebAppPlan')]",
+                "clientAffinityEnabled": true
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[variables('WebAppPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "kind": "",
+            "tags": {},
+            "dependsOn": [],
+            "properties": {
+                "name": "[variables('WebAppPlanName')]",
+                "workerSize": "0",
+                "workerSizeId": "0",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]"
+            },
             "sku": {
-                "name": "Premium_LRS",
-                "tier": "Premium"
+                "Tier": "Free",
+                "Name": "F1"
             }
         }
-    ],
-    "outputs": {}
+    ]
 }
